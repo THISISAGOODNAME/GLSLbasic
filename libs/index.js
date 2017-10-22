@@ -15,48 +15,63 @@
     var vertexId;
     var pixelId;
 
-    switch (select.selectedIndex) {
-      case 0:
-        vertexId = "basicVertex";
-        pixelId = "basicPixel";
+    switch (select.value) {
+      case "noLight": {
+        vertexId = "basicLight_noLight_vret";
+        pixelId = "basicLight_noLight_frag";
         break;
-      case 1:
-        vertexId = "bwVertex";
-        pixelId = "bwPixel";
+      }
+      case "flat": {
+        vertexId = "basicLight_flat_vret";
+        pixelId = "basicLight_flat_frag";
         break;
-      case 2:
-        vertexId = "cellShadingVertex";
-        pixelId = "cellShadingPixel";
+      }
+      case "simplestLight": {
+        vertexId = "basicLight_simplestList_vret";
+        pixelId = "basicLight_simplestList_frag";
         break;
-      case 3:
-        vertexId = "phongVertex";
-        pixelId = "phongPixel";
-        break;
-      case 4:
-        vertexId = "discardVertex";
-        pixelId = "discardPixel";
-        break;
-      case 5:
-        vertexId = "waveVertex";
-        pixelId = "phongPixel";
-        break;
-      case 6:
-        vertexId = "semVertex";
-        pixelId = "semPixel";
-        break;
-      case 7:
-        vertexId = "fresnelVertex";
-        pixelId = "fresnelPixel";
-        break;
+      }
+      // case 0:
+      //   vertexId = "basicVertex";
+      //   pixelId = "basicPixel";
+      //   break;
+      // case 1:
+      //   vertexId = "bwVertex";
+      //   pixelId = "bwPixel";
+      //   break;
+      // case 2:
+      //   vertexId = "cellShadingVertex";
+      //   pixelId = "cellShadingPixel";
+      //   break;
+      // case 3:
+      //   vertexId = "phongVertex";
+      //   pixelId = "phongPixel";
+      //   break;
+      // case 4:
+      //   vertexId = "discardVertex";
+      //   pixelId = "discardPixel";
+      //   break;
+      // case 5:
+      //   vertexId = "waveVertex";
+      //   pixelId = "phongPixel";
+      //   break;
+      // case 6:
+      //   vertexId = "semVertex";
+      //   pixelId = "semPixel";
+      //   break;
+      // case 7:
+      //   vertexId = "fresnelVertex";
+      //   pixelId = "fresnelPixel";
+      //   break;
       default:
         return;
     }
 
     //location.hash = undefined;
 
-    vertexEditor.setValue(BABYLON.Tools.GetDOMTextContent(document.getElementById(vertexId)));
+    vertexEditor.setValue(BABYLON.Tools.GetDOMTextContent(document.getElementById(vertexId)).trim());
     vertexEditor.gotoLine(0);
-    pixelEditor.setValue(BABYLON.Tools.GetDOMTextContent(document.getElementById(pixelId)));
+    pixelEditor.setValue(BABYLON.Tools.GetDOMTextContent(document.getElementById(pixelId)).trim());
     pixelEditor.gotoLine(0);
 
     compile();

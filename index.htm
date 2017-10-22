@@ -443,20 +443,105 @@ void main(void) {
 }
 </script>
 
+<script type="x-shader/x-vertex" id="basicLight_noLight_vret">
+// Attributes
+attribute vec3 position;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+
+void main(void) {
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+}
+</script>
+<script type="x-shader/x-fragment" id="basicLight_noLight_frag">
+#ifdef GL_ES
+    precision highp float;
+#endif
+
+void main(void) {
+    gl_FragColor = vec4(1.0, 0.5, 0.31, 1.0);
+}
+</script>
+
+<script type="x-shader/x-vertex" id="basicLight_flat_vret">
+// Attributes
+attribute vec3 position;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+
+void main(void) {
+    vec3 pos = position;
+    pos.z = .0;
+    gl_Position = worldViewProjection * vec4(pos, 1.0);
+}
+</script>
+<script type="x-shader/x-fragment" id="basicLight_flat_frag">
+#ifdef GL_ES
+    precision highp float;
+#endif
+
+void main(void) {
+    gl_FragColor = vec4(1.0, 0.5, 0.31, 1.0);
+}
+</script>
+
+<script type="x-shader/x-vertex" id="basicLight_simplestList_vret">
+// Attributes
+attribute vec3 position;
+attribute vec3 normal;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+
+// Varying
+varying vec3 vNormal;
+
+void main(void) {
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+
+    vNormal = normalize(normal);
+}
+</script>
+<script type="x-shader/x-fragment" id="basicLight_simplestList_frag">
+#ifdef GL_ES
+    precision highp float;
+#endif
+
+vec3 lightColor = vec3(1.0, 0.0, 0.0);
+vec3 lightDir = vec3(0.0, 0.0, 4.0);
+
+varying vec3 vNormal;
+
+void main(void) {
+    vec3 color = clamp( dot( normalize(vNormal), lightDir ), 0.0, 1.0 ) * lightColor;
+
+    gl_FragColor = vec4(color, 1.0);
+}
+</script>
+
 <div id="outerContainer">
   <div id="subHeaderBackground">
     <div id="templateDropdown" class="dropdownContainer">
       <div class="dropdownLabel">Templates:</div>
       <div class="dropdownSelectContainer">
         <select id="templates">
-          <option selected>Basic</option>
-          <option>Black and white</option>
-          <option>Cell shading</option>
-          <option>Phong</option>
-          <option>Discard</option>
-          <option>Wave</option>
-          <option>Spherical environment mapping</option>
-          <option>Fresnel</option>
+
+          <optgroup label="渲染光照">
+            <option value="noLight" selected>没有光照(纯色)</option>
+            <option value="flat">偏平渲染</option>
+            <option value="simplestLight">最简单光照</option>
+          </optgroup>
+
+          <!--<option selected>Basic</option>-->
+          <!--<option>Black and white</option>-->
+          <!--<option>Cell shading</option>-->
+          <!--<option>Phong</option>-->
+          <!--<option>Discard</option>-->
+          <!--<option>Wave</option>-->
+          <!--<option>Spherical environment mapping</option>-->
+          <!--<option>Fresnel</option>-->
         </select>
       </div>
     </div>
