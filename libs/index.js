@@ -56,6 +56,17 @@
         pixelId = "basicLight_basicTexture_frag";
         break;
       }
+
+      case "tone": {
+        vertexId = "npr_tone_vert";
+        pixelId = "npr_tone_frag";
+        break;
+      }
+      case "hatch": {
+        vertexId = "npr_hatch_vert";
+        pixelId = "npr_hatch_frag";
+        break;
+      }
       // case 0:
       //   vertexId = "basicVertex";
       //   pixelId = "basicPixel";

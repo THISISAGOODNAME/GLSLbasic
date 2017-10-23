@@ -943,6 +943,122 @@ void main(void) {
 }
 </script>
 
+<script type="x-shader/x-vertex" id="npr_tone_vert">
+// Attributes
+attribute vec3 position;
+attribute vec3 normal;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+
+// Varying
+varying vec3 vNormal;
+
+void main() {
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+
+    vNormal = normal;
+}
+</script>
+<script type="x-shader/x-fragment" id="npr_tone_frag">
+// Varying
+varying vec3 vNormal;
+
+vec3 diffuseColor = vec3(1.0, 0.5, 0.31);
+vec3 phongColor = vec3(1.0, 0.7, 0.52);
+float edge = 0.5;
+float phong = 0.9;
+
+vec3 lightPosition = vec3(0.0, 4.0, 4.0);
+
+void main() {
+    vec3 color = diffuseColor;
+    float intensity = dot( lightPosition, vNormal );
+    if ( abs( intensity ) < edge ) {
+        color = vec3(0.0);
+    }
+    if ( intensity > phong ) {
+        color = phongColor;
+    }
+    gl_FragColor = vec4(color, 1.0);
+}
+</script>
+
+<script type="x-shader/x-vertex" id="npr_hatch_vert">
+// Attributes
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+uniform float time;
+
+// Varying
+varying vec3 vNormal;
+varying vec2 vUV;
+varying float vLightIntensity;
+varying float vV;
+
+vec3 lightPosition = vec3(0.0, 4.0, 4.0);
+
+void main() {
+    vec3 pos = vec3(worldViewProjection * vec4(position, 1.0));
+    vec3 tnorm = normalize( normal );
+    vec3 lightDir = normalize( lightPosition - position );
+
+    vLightIntensity = max( dot( lightDir, tnorm ), 0.0 );
+
+    if(uv.s == 0.0 && uv.t == 0.0) {
+        vV = pos.y;
+    } else {
+        vV = uv.t;
+    }
+
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+
+    vNormal = normal;
+    vUV = uv;
+}
+</script>
+<script type="x-shader/x-fragment" id="npr_hatch_frag">
+// Varying
+varying vec3 vNormal;
+varying vec2 vUV;
+varying float vLightIntensity;
+varying float vV;
+
+const float frequency = 1.0;
+
+float sWidth = 10.0;
+
+vec3 lightPosition = vec3(0.0, 4.0, 4.0);
+
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+void main() {
+    float dp = length( vec2( dFdx(vV * sWidth), dFdy(vV * sWidth) ) );
+    float logdp = -log2(dp);
+    float ilogdp = floor(logdp);
+    float stripes = exp2(ilogdp);
+    float noise = rand(vUV);
+    float sawtooth = fract( (vV + noise * 0.01) * frequency * stripes );
+    float triangle = abs( 2.0 * sawtooth - 1.0 );
+    float transition = logdp - ilogdp;
+    triangle = abs( (1.0 + transition) * triangle - transition );
+
+    const float edgeW = 0.2;
+    float edge0 = clamp( vLightIntensity - edgeW, 0.0, 1.0 );
+    float edge1 = clamp( vLightIntensity, 0.0, 1.0 );
+
+    float square = 1.0 - smoothstep(edge0, edge1, triangle);
+
+    gl_FragColor = vec4(vec3(square), 1.0);
+}
+</script>
+
 <div id="outerContainer">
   <div id="subHeaderBackground">
     <div id="templateDropdown" class="dropdownContainer">
@@ -959,6 +1075,11 @@ void main(void) {
             <option value="pointLight">点光源</option>
             <option value="spotLight">聚光灯</option>
             <option value="basicTexture">加载纹理</option>
+          </optgroup>
+
+          <optgroup label="非真实感渲染(NPR)">
+            <option value="tone">卡通渲染</option>
+            <option value="hatch">影线渲染</option>
           </optgroup>
 
           <!--<option selected>Basic</option>-->
