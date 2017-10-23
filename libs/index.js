@@ -77,6 +77,16 @@
         pixelId = "npr_PolkaDot_frag";
         break;
       }
+      case "sphereTransform": {
+        vertexId = "transform_sphereTransform_vert";
+        pixelId = "transform_sphereTransform_frag";
+        break;
+      }
+      // case "fishEye": {
+      //   vertexId = "transform_fishEye_vert";
+      //   pixelId = "transform_fishEye_frag";
+      //   break;
+      // }
       // case 0:
       //   vertexId = "basicVertex";
       //   pixelId = "basicPixel";

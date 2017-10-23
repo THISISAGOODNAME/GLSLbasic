@@ -1184,6 +1184,71 @@ void main() {
 }
 </script>
 
+<script type="x-shader/x-vertex" id="transform_sphereTransform_vert">
+// Attributes
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+uniform float time;
+
+// Varying
+varying vec4 vColor;
+
+vec3 lightPosition = vec3(0.0, 4.0, 4.0);
+vec3 surfaceColor = vec3(1.0, 0.5, 0.31);
+float radius = 1.5;
+float blend = 0.1;
+
+const float PI = 3.1415926;
+const float TWO_PI = 6.28318;
+
+vec3 sphere(vec2 domain) {
+    vec3 range;
+    range.x = radius * cos(domain.y) * sin(domain.x);
+    range.y = radius * sin(domain.y) * sin(domain.x);
+    range.z = radius * cos(domain.x);
+    return range;
+}
+
+void main() {
+    blend = (sin(time) + 1.0) * 0.5;
+
+    vec2 p0 = position.xy * TWO_PI;
+    vec3 tnormal = sphere(p0);
+    vec3 r0 = radius * tnormal;
+    vec3 vertex = r0;
+    tnormal = tnormal * blend + normal * (1.0 - blend);
+    vertex = vertex * blend + position * (1.0 - blend);
+    vec3 lightDir = normalize(lightPosition - vertex);
+    float diffuse = max( dot(lightDir, tnormal), 0.0 );
+    if (diffuse < 0.125) {
+        diffuse = 0.125;
+    }
+    vColor = vec4(surfaceColor * diffuse, 1.0);
+    gl_Position = worldViewProjection * vec4(vertex, 1.0);
+}
+</script>
+<script type="x-shader/x-fragment" id="transform_sphereTransform_frag">
+// Varying
+varying vec4 vColor;
+
+vec3 lightPosition = vec3(0.0, 4.0, 4.0);
+
+void main() {
+    gl_FragColor = vColor;
+}
+</script>
+
+<script type="x-shader/x-vertex" id="transform_fishEye_vert">
+
+</script>
+<script type="x-shader/x-fragment" id="transform_fishEye_frag">
+
+</script>
+
 <div id="outerContainer">
   <div id="subHeaderBackground">
     <div id="templateDropdown" class="dropdownContainer">
@@ -1207,6 +1272,10 @@ void main() {
             <option value="hatch">影线渲染</option>
             <option value="gooch">Gooch渲染</option>
             <option value="PolkaDot">波尔卡圆点渲染</option>
+          </optgroup>
+
+          <optgroup label="变形特效">
+            <option value="sphereTransform">球形变形特效</option>
           </optgroup>
 
           <!--<option selected>Basic</option>-->
