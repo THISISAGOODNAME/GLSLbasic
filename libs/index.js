@@ -259,7 +259,7 @@
 
     var mainTexture = new BABYLON.Texture("amiga.jpg", scene);
 
-    var treeTexture = new BABYLON.Texture("TREE.tga", scene);
+    var treeTexture = new BABYLON.Texture("Tree.tga", scene);
 
     shaderMaterial.setTexture("textureSampler", mainTexture);
     shaderMaterial.setTexture("refSampler", refTexture);
