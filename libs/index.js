@@ -67,6 +67,16 @@
         pixelId = "npr_hatch_frag";
         break;
       }
+      case "gooch": {
+        vertexId = "npr_gooch_vert";
+        pixelId = "npr_gooch_frag";
+        break;
+      }
+      case "PolkaDot": {
+        vertexId = "npr_PolkaDot_vert";
+        pixelId = "npr_PolkaDot_frag";
+        break;
+      }
       // case 0:
       //   vertexId = "basicVertex";
       //   pixelId = "basicPixel";

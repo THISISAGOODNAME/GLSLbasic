@@ -1059,6 +1059,131 @@ void main() {
 }
 </script>
 
+<script type="x-shader/x-vertex" id="npr_gooch_vert">
+// Attributes
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+uniform float time;
+
+// Varying
+varying float vNdotL;
+varying vec3 vReflectVec;
+varying vec3 vViewVec;
+
+vec3 lightPosition = vec3(0.0, 4.0, 4.0);
+
+void main() {
+    vec3 pos = vec3(worldViewProjection * vec4(position, 1.0));
+    vec3 tnorm = normalize( normal );
+    vec3 lightDir = normalize( lightPosition - position );
+
+    vReflectVec = normalize( reflect( -lightDir, tnorm ) );
+    vViewVec = normalize( -pos );
+    vNdotL = ( dot( lightDir, tnorm ) + 1.0 ) * 0.5;
+
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+}
+</script>
+<script type="x-shader/x-fragment" id="npr_gooch_frag">
+// Varying
+varying float vNdotL;
+varying vec3 vReflectVec;
+varying vec3 vViewVec;
+
+vec3 lightPosition = vec3(0.0, 4.0, 4.0);
+
+vec3 surfaceColor = vec3(1.0, 0.5, 0.31);
+vec3 warmColor = vec3(1.0, 0.1, 0.0);
+vec3 coolColor = vec3(0.0, 0.1, 1.0);
+float diffuseWarm = 0.2;
+float diffuseCool = 0.1;
+
+void main() {
+    vec3 kCool = min(coolColor + diffuseCool * surfaceColor, 1.0);
+    vec3 kWarm = min(warmColor + diffuseWarm * surfaceColor, 1.0);
+    vec3 kFinal = mix(kCool, kWarm, vNdotL);
+
+    vec3 nReflect = normalize(vReflectVec);
+    vec3 nView = normalize(vViewVec);
+
+    float spec = max( dot(nReflect, nView), 0.0 );
+    spec = pow(spec, 32.0);
+
+    gl_FragColor = vec4(min(kFinal + spec, 1.0), 1.0);
+}
+</script>
+
+<script type="x-shader/x-vertex" id="npr_PolkaDot_vert">
+// Attributes
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+uniform float time;
+
+// Varying
+varying float vLghtIntensity;
+varying vec3 vPosition;
+
+vec3 lightPosition = vec3(0.0, 4.0, 4.0);
+float specularContribution = 0.7;
+
+void main() {
+    vec3 pos = vec3(worldViewProjection * vec4(position, 1.0));
+    vec3 tnorm = normalize( normal );
+    vec3 lightDir = normalize( lightPosition - position );
+
+    vec3 reflectVec = normalize( reflect( -lightDir, tnorm ) );
+    vec3 viewVec = normalize( -pos );
+
+    float diffuseContribution = 1.0 - specularContribution;
+
+    float diffuse = max( dot(lightDir, tnorm), 0.0 );
+    float specular = 0.0;
+    if (diffuse > 0.0) {
+        specular = max( dot(reflectVec, viewVec), 0.0 );
+        specular = pow( specular, 16.0 );
+    }
+
+    vLghtIntensity = diffuseContribution * diffuse * 1.5 + specularContribution * specular;
+
+    vPosition = position;
+
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+}
+</script>
+<script type="x-shader/x-fragment" id="npr_PolkaDot_frag">
+// Varying
+varying float vLghtIntensity;
+varying vec3 vPosition;
+
+vec3 lightPosition = vec3(0.0, 4.0, 4.0);
+
+vec3 spacing = vec3(0.3, 0.3, 0.25);
+float dotSize = 0.1;
+vec3 modelColor = vec3(1.0);
+vec3 PolkaDotColor = vec3(0.0);
+
+void main() {
+    float insideSphere, sphereRadius, scaledPointLength;
+    vec3 scaledPoint, finalColor;
+
+    scaledPoint = vPosition - (spacing * floor( vPosition / spacing ));
+    scaledPoint = scaledPoint - spacing / 2.0;
+    scaledPointLength = length(scaledPoint);
+    insideSphere = step(scaledPointLength, dotSize);
+    finalColor = vec3( mix( modelColor, PolkaDotColor, insideSphere ) );
+
+    gl_FragColor = clamp( vec4(finalColor * vLghtIntensity, 1.0), 0.0, 1.0 );
+}
+</script>
+
 <div id="outerContainer">
   <div id="subHeaderBackground">
     <div id="templateDropdown" class="dropdownContainer">
@@ -1080,6 +1205,8 @@ void main() {
           <optgroup label="非真实感渲染(NPR)">
             <option value="tone">卡通渲染</option>
             <option value="hatch">影线渲染</option>
+            <option value="gooch">Gooch渲染</option>
+            <option value="PolkaDot">波尔卡圆点渲染</option>
           </optgroup>
 
           <!--<option selected>Basic</option>-->
