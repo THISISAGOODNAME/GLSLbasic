@@ -51,6 +51,11 @@
         pixelId = "basicLight_spotLight_frag";
         break;
       }
+      case "basicTexture": {
+        vertexId = "basicLight_basicTexture_vret";
+        pixelId = "basicLight_basicTexture_frag";
+        break;
+      }
       // case 0:
       //   vertexId = "basicVertex";
       //   pixelId = "basicPixel";

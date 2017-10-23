@@ -914,6 +914,35 @@ void main(void) {
 }
 </script>
 
+<script type="x-shader/x-vertex" id="basicLight_basicTexture_vret">
+// Attributes
+attribute vec3 position;
+attribute vec2 uv;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+
+// Varying
+varying vec2 vUV;
+
+void main(void) {
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+
+    vUV = uv;
+}
+</script>
+<script type="x-shader/x-fragment" id="basicLight_basicTexture_frag">
+precision highp float;
+
+varying vec2 vUV;
+
+uniform sampler2D textureSampler;
+
+void main(void) {
+    gl_FragColor = texture2D(textureSampler, vUV);
+}
+</script>
+
 <div id="outerContainer">
   <div id="subHeaderBackground">
     <div id="templateDropdown" class="dropdownContainer">
@@ -929,6 +958,7 @@ void main(void) {
             <option value="perPixelLighting">逐像素光照</option>
             <option value="pointLight">点光源</option>
             <option value="spotLight">聚光灯</option>
+            <option value="basicTexture">加载纹理</option>
           </optgroup>
 
           <!--<option selected>Basic</option>-->
