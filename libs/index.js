@@ -31,6 +31,11 @@
         pixelId = "basicLight_simplestList_frag";
         break;
       }
+      case "perVertexLighting": {
+        vertexId = "basicLight_perVertexLighting_vret";
+        pixelId = "basicLight_perVertexLighting_frag";
+        break;
+      }
       // case 0:
       //   vertexId = "basicVertex";
       //   pixelId = "basicPixel";
