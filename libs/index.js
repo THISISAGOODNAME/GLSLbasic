@@ -36,6 +36,11 @@
         pixelId = "basicLight_perVertexLighting_frag";
         break;
       }
+      case "perPixelLighting": {
+        vertexId = "basicLight_perPixelLighting_vret";
+        pixelId = "basicLight_perPixelLighting_frag";
+        break;
+      }
       // case 0:
       //   vertexId = "basicVertex";
       //   pixelId = "basicPixel";
@@ -137,6 +142,31 @@
 
           document.getElementById("loading").className = "hidden";
         });
+        break;
+      case 7:
+        document.getElementById("loading").className = "";
+        BABYLON.SceneLoader.ImportMesh("", "", "teapot.babylon", scene, function (newMeshes) {
+          for (index = 0; index < newMeshes.length; index++) {
+            mesh = newMeshes[index];
+            mesh.material = shaderMaterial;
+            meshes.push(mesh);
+          }
+
+          document.getElementById("loading").className = "hidden";
+        });
+        break;
+      case 8:
+        document.getElementById("loading").className = "";
+        BABYLON.SceneLoader.ImportMesh("", "", "monkey.babylon", scene, function (newMeshes) {
+          for (index = 0; index < newMeshes.length; index++) {
+            mesh = newMeshes[index];
+            mesh.material = shaderMaterial;
+            meshes.push(mesh);
+          }
+
+          document.getElementById("loading").className = "hidden";
+        });
+        break;
         return;
     }
 
