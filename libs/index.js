@@ -41,6 +41,16 @@
         pixelId = "basicLight_perPixelLighting_frag";
         break;
       }
+      case "pointLight": {
+        vertexId = "basicLight_pointLight_vret";
+        pixelId = "basicLight_pointLight_frag";
+        break;
+      }
+      case "spotLight": {
+        vertexId = "basicLight_spotLight_vret";
+        pixelId = "basicLight_spotLight_frag";
+        break;
+      }
       // case 0:
       //   vertexId = "basicVertex";
       //   pixelId = "basicPixel";
