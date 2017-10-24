@@ -82,6 +82,16 @@
         pixelId = "transform_sphereTransform_frag";
         break;
       }
+      case "simpleNoise": {
+        vertexId = "noise_simpleNoise_vert";
+        pixelId = "noise_simpleNoise_frag";
+        break;
+      }
+      case "PerlinNoise": {
+        vertexId = "noise_PerlinNoise_vert";
+        pixelId = "noise_PerlinNoise_frag";
+        break;
+      }
       // case "fishEye": {
       //   vertexId = "transform_fishEye_vert";
       //   pixelId = "transform_fishEye_frag";
