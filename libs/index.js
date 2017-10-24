@@ -92,6 +92,11 @@
         pixelId = "noise_PerlinNoise_frag";
         break;
       }
+      case "stripe": {
+        vertexId = "processing_stripe_vret";
+        pixelId = "processing_stripe_frag";
+        break;
+      }
       // case "fishEye": {
       //   vertexId = "transform_fishEye_vert";
       //   pixelId = "transform_fishEye_frag";
