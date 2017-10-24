@@ -51,398 +51,6 @@ void main(void) {
 }
 </script>
 
-<script type="x-shader/x-vertex" id="fresnelVertex">
-precision highp float;
-
-// Attributes
-attribute vec3 position;
-attribute vec3 normal;
-
-// Uniforms
-uniform mat4 world;
-uniform mat4 worldViewProjection;
-
-// Varying
-varying vec3 vPositionW;
-varying vec3 vNormalW;
-
-void main(void) {
-    vec4 outPosition = worldViewProjection * vec4(position, 1.0);
-    gl_Position = outPosition;
-    
-    vPositionW = vec3(world * vec4(position, 1.0));
-    vNormalW = normalize(vec3(world * vec4(normal, 0.0)));
-}
-</script>
-
-<script type="x-shader/x-fragment" id="fresnelPixel">
-precision highp float;
-
-// Lights
-varying vec3 vPositionW;
-varying vec3 vNormalW;
-
-// Refs
-uniform vec3 cameraPosition;
-uniform sampler2D textureSampler;
-
-void main(void) {
-    vec3 color = vec3(1., 1., 1.);
-    vec3 viewDirectionW = normalize(cameraPosition - vPositionW);
-
-    // Fresnel
-	  float fresnelTerm = dot(viewDirectionW, vNormalW);
-	  fresnelTerm = clamp(1.0 - fresnelTerm, 0., 1.);
-
-    gl_FragColor = vec4(color * fresnelTerm, 1.);
-}
-</script>
-
-<script type="x-shader/x-vertex" id="semVertex">
-precision highp float;
-
-// Attributes
-attribute vec3 position;
-attribute vec3 normal;
-attribute vec2 uv;
-
-// Uniforms
-uniform mat4 worldViewProjection;
-
-// Varying
-varying vec4 vPosition;
-varying vec3 vNormal;
-
-void main() {
-
-    vec4 p = vec4( position, 1. );
-
-    vPosition = p;
-    vNormal = normal;
-
-    gl_Position = worldViewProjection * p;
-
-}
-</script>
-
-<script type="x-shader/x-fragment" id="semPixel">
-precision highp float;
-
-uniform mat4 worldView;
-
-varying vec4 vPosition;
-varying vec3 vNormal;
-
-uniform sampler2D textureSampler;
-uniform sampler2D refSampler;
-
-void main(void) {
-
-    vec3 e = normalize( vec3( worldView * vPosition ) );
-    vec3 n = normalize( worldView * vec4(vNormal, 0.0) ).xyz;
-
-    vec3 r = reflect( e, n );
-    float m = 2. * sqrt(
-        pow( r.x, 2. ) +
-        pow( r.y, 2. ) +
-        pow( r.z + 1., 2. )
-    );
-    vec2 vN = r.xy / m + .5;
-
-    vec3 base = texture2D( refSampler, vN).rgb;
-
-    gl_FragColor = vec4( base, 1. );
-}
-</script>
-
-<script type="x-shader/x-vertex" id="waveVertex">
-precision highp float;
-
-// Attributes
-attribute vec3 position;
-attribute vec3 normal;
-attribute vec2 uv;
-
-// Uniforms
-uniform mat4 worldViewProjection;
-uniform float time;
-
-// Varying
-varying vec3 vPosition;
-varying vec3 vNormal;
-varying vec2 vUV;
-
-void main(void) {
-    vec3 v = position;
-    v.x += sin(2.0 * position.y + (time)) * 0.5;
-    
-    gl_Position = worldViewProjection * vec4(v, 1.0);
-    
-    vPosition = position;
-    vNormal = normal;
-    vUV = uv;
-}
-</script>
-
-<script type="x-shader/x-vertex" id="basicVertex">
-precision highp float;
-
-// Attributes
-attribute vec3 position;
-attribute vec2 uv;
-
-// Uniforms
-uniform mat4 worldViewProjection;
-
-// Varying
-varying vec2 vUV;
-
-void main(void) {
-    gl_Position = worldViewProjection * vec4(position, 1.0);
-
-    vUV = uv;
-}
-</script>
-
-<script type="x-shader/x-fragment" id="basicPixel">
-precision highp float;
-
-varying vec2 vUV;
-
-uniform sampler2D textureSampler;
-
-void main(void) {
-    gl_FragColor = texture2D(textureSampler, vUV);
-}
-</script>
-
-<script type="x-shader/x-vertex" id="bwVertex">
-precision highp float;
-
-// Attributes
-attribute vec3 position;
-attribute vec2 uv;
-
-// Uniforms
-uniform mat4 worldViewProjection;
-
-// Varying
-varying vec2 vUV;
-
-void main(void) {
-    gl_Position = worldViewProjection * vec4(position, 1.0);
-
-    vUV = uv;
-}
-</script>
-
-<script type="x-shader/x-fragment" id="bwPixel">
-precision highp float;
-
-varying vec2 vUV;
-
-uniform sampler2D textureSampler;
-
-void main(void) {
-    float luminance = dot(texture2D(textureSampler, vUV).rgb, vec3(0.3, 0.59, 0.11));
-    gl_FragColor = vec4(luminance, luminance, luminance, 1.0);
-}
-</script>
-
-<script type="x-shader/x-vertex" id="cellShadingVertex">
-precision highp float;
-
-// Attributes
-attribute vec3 position;
-attribute vec3 normal;
-attribute vec2 uv;
-
-// Uniforms
-uniform mat4 world;
-uniform mat4 worldViewProjection;
-
-// Varying
-varying vec3 vPositionW;
-varying vec3 vNormalW;
-varying vec2 vUV;
-
-void main(void) {
-    vec4 outPosition = worldViewProjection * vec4(position, 1.0);
-    gl_Position = outPosition;
-    
-    vPositionW = vec3(world * vec4(position, 1.0));
-    vNormalW = normalize(vec3(world * vec4(normal, 0.0)));
-    
-    vUV = uv;
-}
-</script>
-
-<script type="x-shader/x-fragment" id="cellShadingPixel">
-precision highp float;
-
-// Lights
-varying vec3 vPositionW;
-varying vec3 vNormalW;
-varying vec2 vUV;
-
-// Refs
-uniform sampler2D textureSampler;
-
-void main(void) {
-    float ToonThresholds[4];
-    ToonThresholds[0] = 0.95;
-    ToonThresholds[1] = 0.5;
-    ToonThresholds[2] = 0.2;
-    ToonThresholds[3] = 0.03;
-    
-    float ToonBrightnessLevels[5];
-    ToonBrightnessLevels[0] = 1.0;
-    ToonBrightnessLevels[1] = 0.8;
-    ToonBrightnessLevels[2] = 0.6;
-    ToonBrightnessLevels[3] = 0.35;
-    ToonBrightnessLevels[4] = 0.2;
-    
-    vec3 vLightPosition = vec3(0,20,10);
-    
-    // Light
-    vec3 lightVectorW = normalize(vLightPosition - vPositionW);
-    
-    // diffuse
-    float ndl = max(0., dot(vNormalW, lightVectorW));
-    
-    vec3 color = texture2D(textureSampler, vUV).rgb;
-    
-    if (ndl > ToonThresholds[0])
-    {
-        color *= ToonBrightnessLevels[0];
-    }
-    else if (ndl > ToonThresholds[1])
-    {
-        color *= ToonBrightnessLevels[1];
-    }
-    else if (ndl > ToonThresholds[2])
-    {
-        color *= ToonBrightnessLevels[2];
-    }
-    else if (ndl > ToonThresholds[3])
-    {
-        color *= ToonBrightnessLevels[3];
-    }
-    else
-    {
-        color *= ToonBrightnessLevels[4];
-    }
-    
-    gl_FragColor = vec4(color, 1.);
-}
-</script>
-
-<script type="x-shader/x-vertex" id="phongVertex">
-precision highp float;
-
-// Attributes
-attribute vec3 position;
-attribute vec3 normal;
-attribute vec2 uv;
-
-// Uniforms
-uniform mat4 worldViewProjection;
-
-// Varying
-varying vec3 vPosition;
-varying vec3 vNormal;
-varying vec2 vUV;
-
-void main(void) {
-    vec4 outPosition = worldViewProjection * vec4(position, 1.0);
-    gl_Position = outPosition;
-    
-    vUV = uv;
-    vPosition = position;
-    vNormal = normal;
-}
-</script>
-
-<script type="x-shader/x-fragment" id="phongPixel">
-precision highp float;
-
-// Varying
-varying vec3 vPosition;
-varying vec3 vNormal;
-varying vec2 vUV;
-
-// Uniforms
-uniform mat4 world;
-
-// Refs
-uniform vec3 cameraPosition;
-uniform sampler2D textureSampler;
-
-void main(void) {
-    vec3 vLightPosition = vec3(0,20,10);
-    
-    // World values
-    vec3 vPositionW = vec3(world * vec4(vPosition, 1.0));
-    vec3 vNormalW = normalize(vec3(world * vec4(vNormal, 0.0)));
-    vec3 viewDirectionW = normalize(cameraPosition - vPositionW);
-    
-    // Light
-    vec3 lightVectorW = normalize(vLightPosition - vPositionW);
-    vec3 color = texture2D(textureSampler, vUV).rgb;
-    
-    // diffuse
-    float ndl = max(0., dot(vNormalW, lightVectorW));
-    
-    // Specular
-    vec3 angleW = normalize(viewDirectionW + lightVectorW);
-    float specComp = max(0., dot(vNormalW, angleW));
-    specComp = pow(specComp, max(1., 64.)) * 2.;
-    
-    gl_FragColor = vec4(color * ndl + vec3(specComp), 1.);
-}
-</script>
-
-<script type="x-shader/x-vertex" id="discardVertex">
-precision highp float;
-
-// Attributes
-attribute vec3 position;
-attribute vec3 normal;
-attribute vec2 uv;
-
-// Uniforms
-uniform mat4 worldViewProjection;
-
-// Varying
-varying vec2 vUV;
-
-void main(void) {
-    vec4 outPosition = worldViewProjection * vec4(position, 1.0);
-    gl_Position = outPosition;
-
-    vUV = uv;
-}
-</script>
-
-<script type="x-shader/x-fragment" id="discardPixel">
-precision highp float;
-
-varying vec2 vUV;
-
-// Refs
-uniform sampler2D textureSampler;
-
-void main(void) {
-    vec3 color = texture2D(textureSampler, vUV).rgb;
-    
-    if (color.g > 0.5) {
-        discard;
-    }
-    
-    gl_FragColor = vec4(color, 1.);
-}
-</script>
-
 <script type="x-shader/x-vertex" id="basicLight_noLight_vret">
 // Attributes
 attribute vec3 position;
@@ -1480,6 +1088,201 @@ void main(void) {
 }
 </script>
 
+<script type="x-shader/x-vertex" id="processing_bric_vret">
+// Attributes
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+
+// Varying
+varying float vLightIntensity;
+varying vec2 vBricPos;
+varying vec2 vUV;
+
+vec3 lightPosition = vec3(0.0, 4.0, 4.0);
+vec3 eyePosition = vec3(0.0, 0.0, 4.0);
+
+const float specularContribution = 0.3;
+const float diffuseContribution = 0.7;
+
+void main(void) {
+    vec3 tnorm = normalize(normal);
+    vec3 lightDir = normalize(lightPosition - position);
+    vec3 viweDir = normalize(eyePosition - position);
+    vec3 reflectDir = reflect(-lightDir, tnorm);
+
+    float diffuse = max( dot(lightDir, tnorm), 0.0 );
+    float spec = 0.0;
+    if (diffuse > 0.0) {
+        spec = max( dot(reflectDir, viweDir), 0.0 );
+        spec = pow( spec, 16.0 );
+    }
+
+    vLightIntensity = diffuseContribution * diffuse + specularContribution * spec;
+
+    vBricPos = position.xy;
+
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+
+    vUV = uv;
+}
+</script>
+<script type="x-shader/x-fragment" id="processing_bric_frag">
+precision highp float;
+
+varying float vLightIntensity;
+varying vec2 vBricPos;
+varying vec2 vUV;
+
+uniform sampler2D textureSampler;
+
+vec3 bricColor = vec3(1.0, 0.3, 0.2);
+vec3 motarColor = vec3(0.85, 0.86, 0.84);
+vec2 bricSize = vec2(0.3, 0.15);
+vec2 bricPet = vec2(0.8, 0.75);
+
+void main(void) {
+    vec3 color;
+    vec2 pos, useBrick;
+
+    pos = vBricPos / bricSize;
+    if (fract( pos.y * 0.5 ) > 0.5) {
+        pos.x += 0.5;
+    }
+
+    pos = fract(pos);
+    useBrick = step(pos, bricPet);
+
+    color = mix(motarColor, bricColor, useBrick.x * useBrick.y) * vLightIntensity;
+
+    gl_FragColor = vec4(color, 1.0);
+}
+</script>
+
+<script type="x-shader/x-vertex" id="processing_chessboard_vret">
+// Attributes
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+
+// Varying
+varying vec2 vUV;
+
+void main(void) {
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+
+    vUV = uv;
+}
+</script>
+<script type="x-shader/x-fragment" id="processing_chessboard_frag">
+precision highp float;
+
+varying float vLightIntensity;
+varying vec2 vBricPos;
+varying vec2 vUV;
+
+uniform sampler2D textureSampler;
+
+vec3 color1 = vec3(1.0, 1.0, 1.0);
+vec3 color2 = vec3(0.0, 0.0, 0.0);
+vec3 avgColor = vec3(0.5, 0.5, 0.5);
+float frequency = 16.0;
+
+void main(void) {
+    vec3 color;
+    vec2 fw = fwidth(vUV);
+    vec2 fuzz = fw * frequency * 2.0;
+    float fuzzMax = max(fuzz.s, fuzz.t);
+
+    vec2 checkPos = fract(vUV * frequency);
+
+    if (fuzzMax < 0.5) {
+        vec2 p = smoothstep( vec2(0.5), fuzz + vec2(0.5), checkPos ) + (1.0 - smoothstep( vec2(0.0), fuzz, checkPos ));
+        color = mix(color1, color2, p.x * p.y + (1.0 - p.x)*(1.0 - p.y));
+        color = mix(color, avgColor, smoothstep(0.125, 0.5, fuzzMax));
+    } else {
+        color = avgColor;
+    }
+
+    gl_FragColor = vec4(color, 1.0);
+}
+</script>
+
+<script type="x-shader/x-vertex" id="processing_grid_vret">
+// Attributes
+attribute vec3 position;
+attribute vec3 normal;
+attribute vec2 uv;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+
+// Varying
+varying vec3 vDiffuseColor;
+varying vec3 vSpecularColor;
+varying vec2 vUV;
+
+vec3 lightPosition = vec3(0.0, 4.0, 4.0);
+vec3 lightColor = vec3(0.9, 0.8, 0.7);
+vec3 eyePosition = vec3(0.0, 0.0, 4.0);
+vec3 specular = vec3(0.2, 0.2, 0.2);
+vec3 ambient = vec3(0.2, 0.2, 0.2);
+float Kd = 0.8;
+
+const float specularContribution = 0.3;
+const float diffuseContribution = 0.7;
+
+void main(void) {
+    vec3 tnorm = normalize(normal);
+    vec3 lightDir = normalize(lightPosition - position);
+    vec3 viweDir = normalize(eyePosition - position);
+    vec3 HVec = normalize(viweDir + lightDir);
+
+    float spec = abs( dot(HVec, tnorm) );
+    spec = pow(spec, 16.0);
+
+    vDiffuseColor = lightColor * vec3(Kd * abs( dot(lightDir, tnorm) ));
+    vDiffuseColor = clamp(ambient + vDiffuseColor, 0.0, 1.0);
+    vSpecularColor = clamp(lightColor * spec * specular, 0.0, 1.0);
+
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+
+    vUV = uv;
+}
+</script>
+<script type="x-shader/x-fragment" id="processing_grid_frag">
+precision highp float;
+
+varying vec3 vDiffuseColor;
+varying vec3 vSpecularColor;
+varying vec2 vUV;
+
+uniform sampler2D textureSampler;
+
+vec2 scale = vec2(10.0, 10.0);
+vec2 threshold = vec2(0.13, 0.13);
+vec3 surfaceColor = vec3(0.9, 0.7, 0.25);
+
+void main(void) {
+    float ss = fract(vUV.s * scale.x);
+    float tt = fract(vUV.t * scale.y);
+
+    if ( (ss > threshold.s) && (tt > threshold.t) ) {
+        discard;
+    }
+
+    vec3 color = surfaceColor * vDiffuseColor + vSpecularColor;
+
+    gl_FragColor = vec4(color, 1.0);
+}
+</script>
+
 <div id="outerContainer">
   <div id="subHeaderBackground">
     <div id="templateDropdown" class="dropdownContainer">
@@ -1516,6 +1319,9 @@ void main(void) {
 
           <optgroup label="基于过程渲染">
             <option value="stripe">条纹渲染</option>
+            <option value="bric">砖墙渲染</option>
+            <option value="chessboard">棋盘渲染</option>
+            <option value="grid">网格渲染</option>
           </optgroup>
 
           <!--<option selected>Basic</option>-->

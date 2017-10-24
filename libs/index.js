@@ -97,43 +97,21 @@
         pixelId = "processing_stripe_frag";
         break;
       }
-      // case "fishEye": {
-      //   vertexId = "transform_fishEye_vert";
-      //   pixelId = "transform_fishEye_frag";
-      //   break;
-      // }
-      // case 0:
-      //   vertexId = "basicVertex";
-      //   pixelId = "basicPixel";
-      //   break;
-      // case 1:
-      //   vertexId = "bwVertex";
-      //   pixelId = "bwPixel";
-      //   break;
-      // case 2:
-      //   vertexId = "cellShadingVertex";
-      //   pixelId = "cellShadingPixel";
-      //   break;
-      // case 3:
-      //   vertexId = "phongVertex";
-      //   pixelId = "phongPixel";
-      //   break;
-      // case 4:
-      //   vertexId = "discardVertex";
-      //   pixelId = "discardPixel";
-      //   break;
-      // case 5:
-      //   vertexId = "waveVertex";
-      //   pixelId = "phongPixel";
-      //   break;
-      // case 6:
-      //   vertexId = "semVertex";
-      //   pixelId = "semPixel";
-      //   break;
-      // case 7:
-      //   vertexId = "fresnelVertex";
-      //   pixelId = "fresnelPixel";
-      //   break;
+      case "bric": {
+        vertexId = "processing_bric_vret";
+        pixelId = "processing_bric_frag";
+        break;
+      }
+      case "chessboard": {
+        vertexId = "processing_chessboard_vret";
+        pixelId = "processing_chessboard_frag";
+        break;
+      }
+      case "grid": {
+        vertexId = "processing_grid_vret";
+        pixelId = "processing_grid_frag";
+        break;
+      }
       default:
         return;
     }
