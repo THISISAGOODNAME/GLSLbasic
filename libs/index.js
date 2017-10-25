@@ -112,6 +112,21 @@
         pixelId = "processing_grid_frag";
         break;
       }
+      case "brightness": {
+        vertexId = "postEffect_brightness_vret";
+        pixelId = "postEffect_brightness_frag";
+        break;
+      }
+      case "contrast": {
+        vertexId = "postEffect_contrast_vret";
+        pixelId = "postEffect_contrast_frag";
+        break;
+      }
+      case "saturation": {
+        vertexId = "postEffect_saturation_vret";
+        pixelId = "postEffect_saturation_frag";
+        break;
+      }
       default:
         return;
     }
@@ -205,6 +220,12 @@
 
           document.getElementById("loading").className = "hidden";
         });
+        break;
+      case 9:
+        // Creating plane
+        var plane = BABYLON.Mesh.CreatePlane("mesh", 8, scene);
+        plane.rotation.y = Math.PI/2;
+        meshes.push(plane);
         break;
         return;
     }
@@ -300,9 +321,12 @@
 
     var treeTexture = new BABYLON.Texture("Tree.tga", scene);
 
+    var lenaTexture = new BABYLON.Texture("lena.jpg", scene);
+
     shaderMaterial.setTexture("textureSampler", mainTexture);
     shaderMaterial.setTexture("refSampler", refTexture);
     shaderMaterial.setTexture("treeSampler", treeTexture);
+    shaderMaterial.setTexture("picSampler", lenaTexture);
     shaderMaterial.setFloat("time", 0);
     shaderMaterial.setVector3("cameraPosition", BABYLON.Vector3.Zero());
     shaderMaterial.backFaceCulling = false;

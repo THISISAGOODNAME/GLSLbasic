@@ -199,7 +199,6 @@ void main(void) {
 }
 </script>
 
-
 <script type="x-shader/x-vertex" id="basicLight_perPixelLighting_vret">
 // Attributes
 attribute vec3 position;
@@ -1283,6 +1282,111 @@ void main(void) {
 }
 </script>
 
+<script type="x-shader/x-vertex" id="postEffect_brightness_vret">
+// Attributes
+attribute vec3 position;
+attribute vec2 uv;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+
+// Varying
+varying vec2 vUV;
+
+void main(void) {
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+
+    vUV = uv;
+}
+</script>
+<script type="x-shader/x-fragment" id="postEffect_brightness_frag">
+precision highp float;
+
+varying vec2 vUV;
+
+uniform sampler2D picSampler;
+
+// change me!!!
+float alpha = 0.6;
+
+void main(void) {
+    gl_FragColor = texture2D(picSampler, vUV) * alpha;
+}
+</script>
+
+<script type="x-shader/x-vertex" id="postEffect_contrast_vret">
+// Attributes
+attribute vec3 position;
+attribute vec2 uv;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+
+// Varying
+varying vec2 vUV;
+
+void main(void) {
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+
+    vUV = uv;
+}
+</script>
+<script type="x-shader/x-fragment" id="postEffect_contrast_frag">
+precision highp float;
+
+varying vec2 vUV;
+
+uniform sampler2D picSampler;
+
+// change me!!!
+float alpha = 0.6;
+
+void main(void) {
+    vec3 color = texture2D(picSampler, vUV).rgb;
+    vec3 avgLuminance = vec3(0.0, 0.0, 0.0);
+    color = mix(avgLuminance, color, alpha);
+    gl_FragColor = vec4(color, 1.0);
+}
+</script>
+
+<script type="x-shader/x-vertex" id="postEffect_saturation_vret">
+// Attributes
+attribute vec3 position;
+attribute vec2 uv;
+
+// Uniforms
+uniform mat4 worldViewProjection;
+
+// Varying
+varying vec2 vUV;
+
+void main(void) {
+    gl_Position = worldViewProjection * vec4(position, 1.0);
+
+    vUV = uv;
+}
+</script>
+<script type="x-shader/x-fragment" id="postEffect_saturation_frag">
+precision highp float;
+
+varying vec2 vUV;
+
+uniform sampler2D picSampler;
+
+// Values from "Graphics Shaders: Theory and Practice" by Bailey and Cunningham
+const vec3 luminanceWeighting = vec3(0.2125, 0.7154, 0.0721);
+
+// change me!!!
+float alpha = 0.6;
+
+void main(void) {
+    vec3 color = texture2D(picSampler, vUV).rgb;
+    vec3 luminance = vec3( dot(color, luminanceWeighting) );
+    color = mix(luminance, color, alpha);
+    gl_FragColor = vec4(color, 1.0);
+}
+</script>
+
 <div id="outerContainer">
   <div id="subHeaderBackground">
     <div id="templateDropdown" class="dropdownContainer">
@@ -1324,6 +1428,13 @@ void main(void) {
             <option value="grid">网格渲染</option>
           </optgroup>
 
+          <optgroup label="图像处理"></optgroup>
+          <optgroup label="亮度、对比度、饱和度">
+            <option value="brightness">亮度</option>
+            <option value="contrast">对比度</option>
+            <option value="saturation">饱和度</option>
+          </optgroup>
+
           <!--<option selected>Basic</option>-->
           <!--<option>Black and white</option>-->
           <!--<option>Cell shading</option>-->
@@ -1348,6 +1459,7 @@ void main(void) {
           <option>Tree</option>
           <option>teapot</option>
           <option>monkey</option>
+          <option>Plane(post effect)</option>
         </select>
       </div>
     </div>
@@ -1376,10 +1488,10 @@ void main(void) {
       <div class="rowEditor">
         <div class="shaderCode ace_editor ace-chrome" id="fragmentShaderEditor">
           <textarea class="ace_text-input"
-                                                                                          wrap="off"
-                                                                                          autocapitalize="off"
-                                                                                          spellcheck="false"
-                                                                                          style="opacity: 0; height: 16px; width: 7.20312px; right: 882.797px; bottom: 526px;"></textarea>
+                    wrap="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    style="opacity: 0; height: 16px; width: 7.20312px; right: 882.797px; bottom: 526px;"></textarea>
         </div>
       </div>
     </div>

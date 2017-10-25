@@ -21,3 +21,4 @@ editor powered by [babylon.js](http://www.babylonjs.com/)
 7. `sampler2D` refSampler
 8. `float` time
 9. `vec3` cameraPosition
+10. `sampler2D` picSampler(for post effect)
