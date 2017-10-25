@@ -142,6 +142,41 @@
         pixelId = "postEffect_picMix_frag";
         break;
       }
+      case "SmoothingNeighbour": {
+        vertexId = "postEffect_vret";
+        pixelId = "postEffect_SmoothingNeighbour_frag";
+        break;
+      }
+      case "Gauss": {
+        vertexId = "postEffect_vret";
+        pixelId = "postEffect_Gauss_frag";
+        break;
+      }
+      case "Laplace": {
+        vertexId = "postEffect_vret";
+        pixelId = "postEffect_Laplace_frag";
+        break;
+      }
+      case "pencil": {
+        vertexId = "postEffect_vret";
+        pixelId = "postEffect_pencil_frag";
+        break;
+      }
+      case "relief": {
+        vertexId = "postEffect_vret";
+        pixelId = "postEffect_relief_frag";
+        break;
+      }
+      case "Mosaic": {
+        vertexId = "postEffect_vret";
+        pixelId = "postEffect_Mosaic_frag";
+        break;
+      }
+      case "Mosaic_Point": {
+        vertexId = "postEffect_vret";
+        pixelId = "postEffect_Mosaic_Point_frag";
+        break;
+      }
       default:
         return;
     }
