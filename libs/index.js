@@ -113,18 +113,33 @@
         break;
       }
       case "brightness": {
-        vertexId = "postEffect_brightness_vret";
+        vertexId = "postEffect_vret";
         pixelId = "postEffect_brightness_frag";
         break;
       }
       case "contrast": {
-        vertexId = "postEffect_contrast_vret";
+        vertexId = "postEffect_vret";
         pixelId = "postEffect_contrast_frag";
         break;
       }
       case "saturation": {
-        vertexId = "postEffect_saturation_vret";
+        vertexId = "postEffect_vret";
         pixelId = "postEffect_saturation_frag";
+        break;
+      }
+      case "RGB2CMY": {
+        vertexId = "postEffect_vret";
+        pixelId = "postEffect_RGB2CMY_frag";
+        break;
+      }
+      case "RGB2CIE": {
+        vertexId = "postEffect_vret";
+        pixelId = "postEffect_RGB2CIE_frag";
+        break;
+      }
+      case "picMix": {
+        vertexId = "postEffect_vret";
+        pixelId = "postEffect_picMix_frag";
         break;
       }
       default:
